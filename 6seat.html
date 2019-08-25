@@ -1,0 +1,203 @@
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SEAT ARRANGEMENT</title>
+<script type="text/javascript">
+    var stuNum=72;
+    var totSeat=34;
+    var row=5;
+    var stu=new Array(stuNum), seat=new Array(stuNum);
+    function swapPair(firPair,secPair)
+    {       glass=document.getElementById(seat[firPair]).innerHTML;
+            document.getElementById(seat[firPair]).innerHTML=document.getElementById(seat[secPair]).innerHTML;
+            document.getElementById(seat[secPair]).innerHTML=glass;
+            glass=document.getElementById(firPair).src;
+            document.getElementById(firPair).src=document.getElementById(secPair).src;
+            document.getElementById(secPair).src=glass;
+    }
+    function swapPosition(firPair,parameter)
+        {   var secPair;
+            if (parameter==1)
+            {   secPair=firPair-row;
+                if (secPair<=0)
+                    secPair=stuNum-(row-firPair);
+            }
+            if (parameter==2)
+            {   secPair=firPair-1;
+                if (secPair<0)
+                    secPair=stuNum-1;
+            }
+            if (parameter==3)
+            {   secPair=firPair+1;
+                if (secPair==stuNum)
+                    secPair=0;
+            }
+            if (parameter==4)
+            {   secPair=parseInt(firPair)+parseInt(row);
+                if (secPair>=stuNum)
+                    secPair=firPair%row;
+            }
+            swapPair(firPair,secPair);
+            listStu();
+        }
+    function listStu()
+    {   var i=0, list="<h3 align='center'>Listing by student No.</h3>";
+        list+="<table align='center' border='1px'><tr><td>Student No.</td><td>Seat No.</td></tr>"
+        while(i<stuNum)
+        {   list+="<tr><td>"+stu[i]+"</td><td>"+listSeat(stu[i])+"</td><tr>"
+            i++;
+        }
+        list+="</table>";
+        document.getElementById('listStu').innerHTML=list;
+    }
+    function listSeat(target)
+    {   var i=0;
+        while(i<=(totSeat-1))
+        {   if (target==document.getElementById(seat[i]).innerHTML)
+            {   return (i+1);
+            }
+            i++;
+        }
+    }
+    function findSeat(target)
+    {   var i=0, matched=false;
+        while(i<=(totSeat-1))
+        {   if (target==document.getElementById(seat[i]).innerHTML)
+            {   alert("The seat no. for "+target+" is "+(i+1)+" .");
+                matched=true;
+                return (i+1);
+            }
+            else
+                i++;
+        }
+        if(!matched)
+            alert("Sorry. \n The student No. starts from 50000001 to 500000"+stuNum+". \n Please enter a valid one.");
+    }
+    function orderRandomly()
+    {   var i=1;
+        var firPair,secPair,glass;
+        orderByNo();
+        while(i<=totSeat)
+        {   firPair=Math.floor(Math.random()*totSeat);
+            secPair=Math.floor(Math.random()*totSeat);
+            glass=document.getElementById(seat[firPair]).innerHTML;
+            document.getElementById(seat[firPair]).innerHTML=document.getElementById(seat[secPair]).innerHTML;
+            document.getElementById(seat[secPair]).innerHTML=glass;
+            glass=document.getElementById(firPair).src;
+            document.getElementById(firPair).src=document.getElementById(secPair).src;
+            document.getElementById(secPair).src=glass;
+            i++;
+        }
+    }
+    function arrangeRandomly4Test()
+    {   var i=0;
+        while(i<stuNum)
+        {   var fir=Math.floor(Math.random()*totSeat/2)*2;
+            var sec=Math.floor(Math.random()*totSeat/2)*2;
+            swapPair(fir,sec);
+            i++;
+        }
+    }
+    function arrange4Test()
+    {   var i=0, m=1, seatPlan;
+        namingStudent();
+        seatPlan="<table border='1px' align='center' style='font-family:Arial, Helvetica, sans-serif;font-size:12px'>";
+        totSeat=stuNum*2;
+        while(i<totSeat)
+        {   if(i%row==0)
+                seatPlan+="<tr>";
+            if((i+1)%2==1)
+            {   seatPlan+="<td align='center' valign='top'><b>(Seat no. "+(i+1)+")</br></b><br/><span id='seat"+(i+1)+"'></span>";
+                seatPlan+="<br/><img id='"+i+"' src='http://www.cs.cityu.edu.hk/~helena/bin/smallfaces/icon"+m+".gif' height='30'/>";
+                m++;
+            }
+            else
+            {   seatPlan+="<td align='center' valign='top'><b>(Seat no. "+(i+1)+")</br></b><br/><span id='seat"+(i+1)+"'></span>";
+                seatPlan+="<br/><img id='"+i+"' src='http://cdn1.iconfinder.com/data/icons/fatcow/32x32/qip_not_available.png' height='30'/>";
+            }
+            seatPlan+="<form><p align='center'><input type='button' value='↑' style= 'font-size:5pt' onclick='swapPosition("+i+",1)'/><br/><input type='button' value='←' style= 'font-size:5pt' onclick='swapPosition("+i+",2)'/><input type='button' style='font-size:5pt' value='→' onclick='swapPosition("+i+",3)'/><br/><input type='button' value='↓' style= 'font-size:5pt' onclick='swapPosition("+i+",4)'/></p></form>";
+            if(i%row==(row-1))
+                seatPlan+="</tr>";
+            i++;
+        }
+        document.getElementById("seatTable").innerHTML=seatPlan+"</table>";
+        i=0, m=1;
+        while(i<totSeat)
+        {   if((i+1)%2==1)
+            {   document.getElementById(seat[i]).innerHTML=stu[m-1];
+                m++;
+            }
+            else
+                document.getElementById(seat[i]).innerHTML="<span style='color:gray'>vacancy</span>";
+            i++;
+        }
+    }
+    function orderByNo()
+    {   var i=0, seatPlan;
+        namingStudent();
+        seatPlan="<table border='1px' align='center' style='font-family:Arial, Helvetica, sans-serif;font-size:12px'>";
+        while(i<=(totSeat-1))
+        {   if(i%row==0)
+                seatPlan+="<tr>";
+            if(i<stuNum)
+            {   seatPlan+="<td align='center' valign='top'><b>(Seat no. "+(i+1)+")</br></b><br/><span id='seat"+(i+1)+"'></span>";
+                seatPlan+="<br/><img id='"+i+"' src='http://www.cs.cityu.edu.hk/~helena/bin/smallfaces/icon"+(i+1)+".gif' height='30'/>";
+            }
+            else
+            {   seatPlan+="<td align='center' valign='top'><b>(Seat no. "+(i+1)+")</br></b><br/><span id='seat"+(i+1)+"'></span>";
+                seatPlan+="<br/><img id='"+i+"' src='http://cdn1.iconfinder.com/data/icons/fatcow/32x32/qip_not_available.png' height='30'/>";
+            }
+            seatPlan+="<form><p align='center'><input type='button' value='↑' style= 'font-size:5pt' onclick='swapPosition("+i+",1)'/><br/><input type='button' value='←' style= 'font-size:5pt' onclick='swapPosition("+i+",2)'/><input type='button' style='font-size:5pt' value='→' onclick='swapPosition("+i+",3)'/><br/><input type='button' value='↓' style= 'font-size:5pt' onclick='swapPosition("+i+",4)'/></p></form>";
+            if(i%row==(row-1))
+                seatPlan+="</tr>";
+            i++;
+        }
+        document.getElementById("seatTable").innerHTML=seatPlan+"</table>";
+        i=0;
+        while(i<totSeat)
+        {   if(i<stuNum)
+                document.getElementById(seat[i]).innerHTML=stu[i];
+            else
+                document.getElementById(seat[i]).innerHTML="<span style='color:gray'>vacancy</span>";
+            i++;
+        }
+    }
+    function namingStudent()
+    {   var i=0;
+        while(i<totSeat)
+        {   stu[i]=50000001+i;
+            if(i>=stuNum)
+                stu[i]="None";
+            i++;
+        }
+        i=0;
+        while(i<totSeat)
+        {   seat[i]='seat'+(i+1);
+            i++;
+        }
+    }
+</script>
+</head>
+<body onload="orderByNo()">
+<h1 align="center">Seating Plan</h1>
+<h3 align="center">
+<form>
+    <input type="button" value="Arrange by Student NO. for Test" onclick="arrange4Test();listStu();"/>
+    <input type="button" value="Arrange Randomly for Test" onclick="arrange4Test();arrangeRandomly4Test();listStu();"/>
+    <input type="button" value="Ordered by Student No." onclick="orderByNo();listStu();"/>
+    <input type="button" value="Randomly Assigned Seats" onclick="orderRandomly();listStu();"/>
+</form>
+</h3>
+<table align="center" border="1px">
+    <tr><td>TEACHER'S DESK</td></tr>
+</table>
+<br/>
+<span id="seatTable"></span>
+<br/>
+<h3 align="center">
+<a href="javascript: onclick= target=prompt('What is the student No.？',50000001);findSeat(target)">Find one's seat</a>|
+<a href="javascript: onclick=listStu()">List by student no</a>
+</h3>
+<span id="listStu"></span>
+</body>
+</html>
